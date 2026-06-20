@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Private Album ✨</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+  <!-- Loading -->
+  <div class="loading-screen" id="loading">
+    <div class="loader-ring"></div>
+    <p class="loading-title">Memuat kenangan… 🌸</p>
+    <p class="loading-sub">Sebentar ya, sayang ✨</p>
+  </div>
+
+  <main class="app" id="app">
+    <section class="card">
+      <header>
+        <div class="brand">
+          <h1>✦ Private Album ✦</h1>
+          <p>Masukkan passcode untuk melihat galeri. Tambah foto kapan saja via URL.</p>
+        </div>
+        <div class="pill">💛 for you</div>
+      </header>
+
+      <!-- Passcode View -->
+      <div class="view" id="passView">
+        <div class="center">
+          <div class="panel">
+            <div class="panel-deco">🔐</div>
+            <h2>Passcode</h2>
+            <p class="hint">Hanya untuk kita berdua. Jangan kasih siapa-siapa ya 🤫</p>
+            <div class="field">
+              <label for="code">Masukkan passcode</label>
+              <div class="row-flex">
+                <input id="code" type="password" autocomplete="off" placeholder="••••••" />
+                <button class="btn primary" id="enterBtn" type="button">Masuk</button>
+              </div>
+            </div>
+            <div class="err-box" id="errBox">Passcode salah. Coba lagi 💔</div>
+            <div class="notice-box" id="lockBox"></div>
+            <p class="footer-note">Passcode bisa diubah di Settings setelah masuk.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery View -->
+      <div class="gallery" id="galleryView" style="display:none;">
+        <div class="top-actions">
+   <div class="left-actions">
+  <button class="btn secondary small" id="musicBtn" title="Musik">🎵</button>
+  <button class="btn secondary small" id="lockBtn">🔒 Kunci</button>
+  <button class="btn secondary small" id="settingsBtn">⚙️ Settings</button>
+  <button class="btn gold small" id="addPhotoBtn">＋ Tambah Foto</button>
+         </div>
+          <div class="kbd-hint">Klik foto untuk lihat fullscreen • ← → pindah</div>
+        </div>
+        <div class="grid" id="grid"></div>
+      </div>
+      
+      <div id="heartRainContainer"></div>
+
+
+      <!-- Slideshow bar (shown only in gallery) -->
+      <div class="slide-bar" id="slideBar" style="display:none;">
+        <span class="slide-label">Slideshow:</span>
+        <button class="btn primary small" id="slideBtn">▶ Putar</button>
+        <select class="speed-select" id="speedSelect">
+          <option value="2500">Cepat (2.5d)</option>
+          <option value="4000" selected>Normal (4d)</option>
+          <option value="6000">Lambat (6d)</option>
+          <option value="10000">Santai (10d)</option>
+        </select>
+        <span class="slide-label" id="slideLabelInfo" style="display:none;"></span>
+      </div>
+    </section>
+  </main>
+
+  <!-- ADD PHOTO MODAL -->
+  <div class="overlay" id="addOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h3>✦ Tambah Foto</h3>
+          <p class="sub">Masukkan URL gambar untuk ditambahkan ke galeri.</p>
+        </div>
+        <button class="btn secondary small" id="addCloseBtn">Tutup</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="photoUrl">URL Foto</label>
+          <div class="row-flex">
+            <input id="photoUrl" type="url" placeholder="https://example.com/foto.jpg" />
+            <button class="btn secondary small" id="previewBtn" type="button">Preview</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="photoTitle">Judul Foto</label>
+          <input id="photoTitle" type="text" placeholder="Contoh: Momen indah kita ✨" />
+        </div>
+        <div class="url-preview" id="urlPreview">
+          <img id="previewImg" alt="Preview" />
+          <div class="preview-placeholder" id="previewPlaceholder">Preview foto muncul di sini 🌸</div>
+          <div class="preview-err" id="previewErr">Gagal load gambar. Cek URL-nya ya 💔</div>
+        </div>
+        <button class="btn primary" id="savePhotoBtn" style="width:100%;" disabled>＋ Simpan ke Galeri</button>
+
+        <div style="border-top:1px solid var(--border); padding-top:14px;">
+          <p style="font-size:13px; color:var(--muted); margin-bottom:10px;">📋 Foto tersimpan di galeri:</p>
+          <div class="slide-list" id="photoList">
+            <div style="text-align:center; color:rgba(255,200,215,.35); font-size:13px; padding:20px;">Belum ada foto.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h3>⚙️ Settings</h3>
+          <p class="sub">Passcode, lockout, dan keamanan.</p>
+        </div>
+        <button class="btn secondary small" id="settingsCloseBtn">Tutup</button>
+      </div>
+      <div class="modal-body-2col" style="padding-top:16px;">
+        <div class="box">
+          <h4>Ganti Passcode</h4>
+          <p>Tersimpan di browser (localStorage).</p>
+          <div class="field">
+            <label for="newPass">Passcode baru</label>
+            <input id="newPass" type="password" placeholder="Ketik passcode baru..." />
+          </div>
+          <button class="btn primary" id="savePassBtn" style="width:100%; min-width:0;">Simpan</button>
+        </div>
+        <div class="box">
+          <h4>Reset & Keamanan</h4>
+          <p>Reset lockout atau kembalikan ke default.</p>
+          <div class="row-flex" style="margin-top:8px; flex-wrap:wrap;">
+            <button class="btn secondary" id="resetLockBtn" style="flex:1; min-width:0;">Reset Lockout</button>
+            <button class="btn danger" id="resetPassBtn" style="flex:1; min-width:0;">Reset Passcode</button>
+          </div>
+        </div>
+        <div class="divider-full"></div>
+        <div class="box" style="grid-column:1/-1;">
+          <h4>Parameter Lockout</h4>
+          <p>Setelah salah sebanyak <b>maks</b>, input dikunci selama <b>durasi</b>.</p>
+          <div class="row-flex" style="flex-wrap:wrap; align-items:flex-end; gap:12px;">
+            <div style="flex:1; min-width:160px;">
+              <label for="maxFails">Maks salah</label>
+              <input id="maxFails" type="text" inputmode="numeric" placeholder="5" />
+            </div>
+            <div style="flex:1; min-width:160px;">
+              <label for="lockSeconds">Durasi lock (detik)</label>
+              <input id="lockSeconds" type="text" inputmode="numeric" placeholder="30" />
+            </div>
+            <button class="btn secondary" id="saveLockParamsBtn" style="min-width:0; padding:12px 14px;">Simpan</button>
+          </div>
+        </div>
+        <div class="settings-msg" id="settingsMsg" style="grid-column:1/-1;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN VIEWER -->
+  <div class="viewer-overlay" id="viewerOverlay">
+    <div class="viewer">
+      <div class="viewer-img-wrap" id="imgWrap">
+        <img id="viewerImgA" alt="" src="" />
+        <img id="viewerImgB" alt="" src="" class="hidden-img" />
+      </div>
+      <div class="viewer-toolbar">
+        <div class="grp">
+          <button class="iconbtn" id="prevBtn">⟨ Prev</button>
+          <button class="iconbtn" id="nextBtn">Next ⟩</button>
+        </div>
+        <div class="grp">
+          <button class="iconbtn" id="viewerSlideBtn">▶ Slideshow</button>
+          <button class="iconbtn" id="viewerCloseBtn">✕ Tutup</button>
+        </div>
+      </div>
+      <div class="dots" id="viewerDots"></div>
+      <div class="viewer-caption">
+        <div>
+          <div class="vc-name" id="viewerCap">—</div>
+          <div class="vc-meta" id="viewerMeta">—</div>
+        </div>
+        <div class="vc-meta">Keyboard: Esc &nbsp;← &nbsp;→</div>
+      </div>
+      <div class="viewer-progress"><div class="viewer-progress-fill" id="viewerProgressFill" style="width:0%"></div></div>
+    </div>
+  </div>
+<div id="fake-chat-box" class="chat-bubble">
+    <p id="chat-text">Halo sayang!</p>
+</div>
+
+
+<audio id="bgMusic" loop>
+  <source src="https://files.catbox.moe/0sy9a8.mp3" type="audio/mpeg">
+</audio>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
